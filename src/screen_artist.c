@@ -303,7 +303,7 @@ static void
 screen_artist_init(WINDOW *w, int cols, int rows)
 {
 	browser.lw = list_window_init(w, cols, rows);
-	browser.song_format = options.list_format;
+	browser.song_format = options.browse_list_format;
 	artist = NULL;
 	album = NULL;
 }
