@@ -486,9 +486,10 @@ screen_browser_paint_directory(WINDOW *w, unsigned width,
 {
 	row_color(w, COLOR_DIRECTORY, selected);
 
-	waddch(w, '[');
+	// JCD - don't wrap entries in brackets
+	//waddch(w, '[');
 	waddstr(w, name);
-	waddch(w, ']');
+	//waddch(w, ']');
 
 	/* erase the unused space after the text */
 	row_clear_to_eol(w, width, selected);
