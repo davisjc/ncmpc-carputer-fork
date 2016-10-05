@@ -210,7 +210,8 @@ load_song_list(struct mpdclient *c)
 
 	browser.filelist = filelist_new();
 	/* add a dummy entry for ".." */
-	filelist_append(browser.filelist, NULL);
+	// JCD - don't put ".." at the top of the list
+	//filelist_append(browser.filelist, NULL);
 
 	if (connection != NULL) {
 		mpd_search_db_songs(connection, true);

@@ -75,9 +75,10 @@ screen_file_reload(struct mpdclient *c)
 		filelist_free(browser.filelist);
 
 	browser.filelist = filelist_new();
-	if (*current_path != 0)
-		/* add a dummy entry for ./.. */
-		filelist_append(browser.filelist, NULL);
+	// JCD - don't put ".." at the top of the list
+	//if (*current_path != 0)
+	//	/* add a dummy entry for ./.. */
+	//	filelist_append(browser.filelist, NULL);
 
 	screen_file_load_list(c, browser.filelist);
 
