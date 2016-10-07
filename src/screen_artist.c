@@ -663,7 +663,8 @@ screen_artist_cmd(struct mpdclient *c, command_t cmd)
 		}
 		break;
 
-		/* continue and update... */
+		reload_lists(c);
+		return false;
 	case CMD_SCREEN_UPDATE:
 		reload_lists(c);
 		return false;

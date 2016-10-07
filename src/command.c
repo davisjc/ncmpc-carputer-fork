@@ -156,6 +156,8 @@ static command_definition_t cmds[] = {
 	  N_("Save queue") },
 	{ { 'a', 0, 0 }, 0, CMD_ADD, "add",
 	  N_("Add url/file to queue") },
+	{ { 'A', 0, 0 }, 0, CMD_ADD_PLAYNOW, "addplaynow",
+	  N_("Add url/file to queue and play now") },
 
 	{ { '!', 0, 0 }, 0, CMD_GO_ROOT_DIRECTORY, "go-root-directory",
 	  N_("Go to root directory") },
