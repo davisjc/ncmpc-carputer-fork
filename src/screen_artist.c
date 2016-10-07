@@ -49,10 +49,17 @@ static struct screen_browser browser;
 static gint
 compare_utf8(gconstpointer s1, gconstpointer s2)
 {
-	const char *const*t1 = s1, *const*t2 = s2;
+	const char *str1 = *((const char *const*)s1);
+	const char *str2 = *((const char *const*)s2);
 
-	char *key1 = g_utf8_collate_key(*t1,-1);
-	char *key2 = g_utf8_collate_key(*t2,-1);
+	/* JCD - ignore leading prefixes that shouldn't affect sort. */
+	if (g_str_has_prefix(str1, "The ") || g_str_has_prefix(str1, "the "))
+		str1 += 4;
+	if (g_str_has_prefix(str2, "The ") || g_str_has_prefix(str2, "the "))
+		str2 += 4;
+
+	char *key1 = g_utf8_collate_key(str1, -1);
+	char *key2 = g_utf8_collate_key(str2, -1);
 	int n = strcmp(key1,key2);
 	g_free(key1);
 	g_free(key2);
