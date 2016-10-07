@@ -377,12 +377,27 @@ browser_handle_mouse_event(struct screen_browser *browser, struct mpdclient *c)
 #endif
 
 static void
-screen_browser_paint_callback(WINDOW *w, unsigned i, unsigned y,
-			      unsigned width, bool selected, const void *data);
+screen_browser_paint_callback_common(WINDOW *w, unsigned i, unsigned y,
+			      unsigned width, bool selected, const void *data,
+				  bool use_long_format);
+
+static void
+screen_browser_paint_short_format_callback(WINDOW *w, unsigned i, unsigned y,
+			      unsigned width, bool selected, const void *data)
+{
+	screen_browser_paint_callback_common(w, i, y, width, selected, data, false);
+}
+
+static void
+screen_browser_paint_long_format_callback(WINDOW *w, unsigned i, unsigned y,
+			      unsigned width, bool selected, const void *data)
+{
+	screen_browser_paint_callback_common(w, i, y, width, selected, data, true);
+}
 
 bool
 browser_cmd(struct screen_browser *browser,
-	    struct mpdclient *c, command_t cmd)
+	    struct mpdclient *c, command_t cmd, bool use_long_format)
 {
 	if (browser->filelist == NULL)
 		return false;
@@ -403,9 +418,14 @@ browser_cmd(struct screen_browser *browser,
 			    browser->filelist);
 		return true;
 	case CMD_LIST_JUMP:
-		screen_jump(browser->lw,
-			    browser_lw_callback, browser->filelist,
-			    screen_browser_paint_callback, browser);
+		if (use_long_format)
+			screen_jump(browser->lw,
+					browser_lw_callback, browser->filelist,
+					screen_browser_paint_long_format_callback, browser);
+		else
+			screen_jump(browser->lw,
+					browser_lw_callback, browser->filelist,
+					screen_browser_paint_short_format_callback, browser);
 		return true;
 
 #ifdef HAVE_GETMOUSE
@@ -503,9 +523,10 @@ screen_browser_paint_playlist(WINDOW *w, unsigned width,
 }
 
 static void
-screen_browser_paint_callback(WINDOW *w, unsigned i,
+screen_browser_paint_callback_common(WINDOW *w, unsigned i,
 			      unsigned y, unsigned width,
-			      bool selected, const void *data)
+			      bool selected, const void *data,
+			      bool use_long_format)
 {
 	const struct screen_browser *browser = (const struct screen_browser *) data;
 
@@ -541,8 +562,14 @@ screen_browser_paint_callback(WINDOW *w, unsigned i,
 		break;
 
 	case MPD_ENTITY_TYPE_SONG:
-		paint_song_row(w, y, width, selected, highlight,
-			       mpd_entity_get_song(entity), NULL, browser->song_format_short);
+		if (use_long_format)
+			paint_song_row(w, y, width, selected, highlight,
+					mpd_entity_get_song(entity), NULL,
+					browser->song_format);
+		else
+			paint_song_row(w, y, width, selected, highlight,
+					mpd_entity_get_song(entity), NULL,
+					browser->song_format_short);
 		break;
 
 	case MPD_ENTITY_TYPE_PLAYLIST:
@@ -559,8 +586,15 @@ screen_browser_paint_callback(WINDOW *w, unsigned i,
 }
 
 void
-screen_browser_paint(const struct screen_browser *browser)
+screen_browser_paint(const struct screen_browser *browser,
+		bool use_long_format)
 {
-	list_window_paint2(browser->lw, screen_browser_paint_callback,
-			   browser);
+	if (use_long_format)
+		list_window_paint2(browser->lw,
+				   screen_browser_paint_long_format_callback,
+				   browser);
+	else
+		list_window_paint2(browser->lw,
+				   screen_browser_paint_short_format_callback,
+				   browser);
 }

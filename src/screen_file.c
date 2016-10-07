@@ -304,7 +304,7 @@ screen_file_get_title(char *str, size_t size)
 static void
 screen_file_paint(void)
 {
-	screen_browser_paint(&browser);
+	screen_browser_paint(&browser, false);
 }
 
 static void
@@ -362,7 +362,7 @@ screen_file_cmd(struct mpdclient *c, command_t cmd)
 		break;
 	}
 
-	if (browser_cmd(&browser, c, cmd)) {
+	if (browser_cmd(&browser, c, cmd, false)) {
 		if (screen_is_visible(&screen_browse))
 			screen_file_repaint();
 		return true;

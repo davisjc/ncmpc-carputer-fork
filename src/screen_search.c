@@ -398,7 +398,7 @@ screen_search_paint(void)
 {
 	if (browser.filelist) {
 		browser.lw->hide_cursor = false;
-		screen_browser_paint(&browser);
+		screen_browser_paint(&browser, false);
 	} else {
 		browser.lw->hide_cursor = true;
 		list_window_paint(browser.lw, lw_search_help_callback, NULL);
@@ -464,7 +464,7 @@ screen_search_cmd(struct mpdclient *c, command_t cmd)
 	}
 
 	if (browser.filelist != NULL &&
-	    browser_cmd(&browser, c, cmd)) {
+	    browser_cmd(&browser, c, cmd, false)) {
 		if (screen_is_visible(&screen_search))
 			search_repaint();
 		return true;

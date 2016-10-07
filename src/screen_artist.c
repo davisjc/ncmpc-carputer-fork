@@ -386,7 +386,7 @@ static void
 screen_artist_paint(void)
 {
 	if (browser.filelist) {
-		screen_browser_paint(&browser);
+		screen_browser_paint(&browser, (album == ALL_TRACKS));
 	} else if (album_list != NULL)
 		list_window_paint2(browser.lw,
 				   paint_album_callback, album_list);
@@ -502,7 +502,7 @@ screen_artist_lw_cmd(struct mpdclient *c, command_t cmd)
 		return list_window_cmd(browser.lw, cmd);
 
 	case LIST_SONGS:
-		return browser_cmd(&browser, c, cmd);
+		return browser_cmd(&browser, c, cmd, (album == ALL_TRACKS));
 	}
 
 	assert(0);

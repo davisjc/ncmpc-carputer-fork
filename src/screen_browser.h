@@ -62,13 +62,14 @@ screen_browser_paint_directory(WINDOW *w, unsigned width,
 			       bool selected, const char *name);
 
 void
-screen_browser_paint(const struct screen_browser *browser);
+screen_browser_paint(const struct screen_browser *browser,
+		bool use_long_format);
 
 struct filelist_entry *
 browser_get_selected_entry(const struct screen_browser *browser);
 
 bool
 browser_cmd(struct screen_browser *browser,
-	    struct mpdclient *c, command_t cmd);
+	    struct mpdclient *c, command_t cmd, bool use_long_format);
 
 #endif
