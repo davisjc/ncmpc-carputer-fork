@@ -647,7 +647,7 @@ screen_artist_cmd(struct mpdclient *c, command_t cmd)
 			for (unsigned i = range.start; i < range.end; ++i) {
 				if(i == album_list->len)
 					add_query(c, MPD_TAG_ARTIST, artist, NULL);
-				else if (i > 0)
+				else
 				{
 					selected = g_ptr_array_index(album_list,
 								     browser.lw->selected);
