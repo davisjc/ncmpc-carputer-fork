@@ -251,7 +251,8 @@ screen_file_init(WINDOW *w, int cols, int rows)
 	current_path = g_strdup("");
 
 	browser.lw = list_window_init(w, cols, rows);
-	browser.song_format = options.browse_list_format;
+	browser.song_format = options.list_format;
+	browser.song_format_short = options.list_format_short;
 }
 
 static void

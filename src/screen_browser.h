@@ -37,6 +37,7 @@ struct screen_browser {
 
 	struct filelist *filelist;
 	const char *song_format;
+	const char *song_format_short;
 };
 
 #ifndef NCMPC_MINI

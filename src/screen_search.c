@@ -356,6 +356,7 @@ screen_search_init(WINDOW *w, int cols, int rows)
 		browser.song_format = options.search_format;
 	} else {
 		browser.song_format = options.list_format;
+		browser.song_format_short = options.list_format_short;
 	}
 	list_window_set_length(browser.lw, G_N_ELEMENTS(help_text));
 }

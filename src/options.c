@@ -378,7 +378,7 @@ options_init(void)
 {
 	/* default option values */
 	options.list_format = g_strdup(DEFAULT_LIST_FORMAT);
-	options.browse_list_format = g_strdup(DEFAULT_BROWSE_LIST_FORMAT);
+	options.list_format_short = g_strdup(DEFAULT_LIST_FORMAT_SHORT);
 	options.search_format = NULL;
 	options.status_format = g_strdup(DEFAULT_STATUS_FORMAT);
 	options.screen_list = g_strsplit_set(DEFAULT_SCREEN_LIST, " ", 0);
@@ -399,7 +399,7 @@ options_deinit(void)
 	g_free(options.config_file);
 	g_free(options.key_file);
 	g_free(options.list_format);
-	g_free(options.browse_list_format);
+	g_free(options.list_format_short);
 	g_free(options.search_format);
 	g_free(options.status_format);
 	g_strfreev(options.screen_list);

@@ -32,7 +32,7 @@ typedef struct {
 	char *config_file;
 	char *key_file;
 	char *list_format;
-	char *browse_list_format;
+	char *list_format_short;
 	char *search_format;
 	char *status_format;
 #ifndef NCMPC_MINI

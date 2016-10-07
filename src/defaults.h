@@ -29,8 +29,8 @@
 /* song format - list window */
 #define DEFAULT_LIST_FORMAT "%name%|[%artist% - ][%title%|%shortfile%]"
 
-// JCD - define a different format for the browse song screen
-#define DEFAULT_BROWSE_LIST_FORMAT "[%track% - ]%title%"
+/* JCD - define a short format */
+#define DEFAULT_LIST_FORMAT_SHORT "[%track% - ]%title%"
 
 /* song format - status window */
 #define DEFAULT_STATUS_FORMAT "[%artist% - ][%title%|%shortfile%]"

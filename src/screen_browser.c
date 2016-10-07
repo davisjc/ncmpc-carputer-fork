@@ -99,7 +99,7 @@ browser_lw_callback(unsigned idx, void *data)
 	} else if (mpd_entity_get_type(entity) == MPD_ENTITY_TYPE_SONG) {
 		const struct mpd_song *song = mpd_entity_get_song(entity);
 
-		strfsong(buf, BUFSIZE, options.browse_list_format, song);
+		strfsong(buf, BUFSIZE, options.list_format_short, song);
 		return buf;
 	} else if (mpd_entity_get_type(entity) == MPD_ENTITY_TYPE_PLAYLIST) {
 		const struct mpd_playlist *playlist =
@@ -164,7 +164,7 @@ enqueue_and_play(struct mpdclient *c, struct filelist_entry *entry)
 #ifndef NCMPC_MINI
 		entry->flags |= HIGHLIGHT;
 #endif
-		strfsong(buf, BUFSIZE, options.browse_list_format, song);
+		strfsong(buf, BUFSIZE, options.list_format_short, song);
 		screen_status_printf(_("Adding \'%s\' to queue"), buf);
 	}
 
@@ -282,7 +282,7 @@ browser_select_entry(struct mpdclient *c, struct filelist_entry *entry,
 		if (mpdclient_cmd_add(c, song)) {
 			char buf[BUFSIZE];
 
-			strfsong(buf, BUFSIZE, options.browse_list_format, song);
+			strfsong(buf, BUFSIZE, options.list_format_short, song);
 			screen_status_printf(_("Adding \'%s\' to queue"), buf);
 		}
 #ifndef NCMPC_MINI
@@ -542,7 +542,7 @@ screen_browser_paint_callback(WINDOW *w, unsigned i,
 
 	case MPD_ENTITY_TYPE_SONG:
 		paint_song_row(w, y, width, selected, highlight,
-			       mpd_entity_get_song(entity), NULL, browser->song_format);
+			       mpd_entity_get_song(entity), NULL, browser->song_format_short);
 		break;
 
 	case MPD_ENTITY_TYPE_PLAYLIST:
