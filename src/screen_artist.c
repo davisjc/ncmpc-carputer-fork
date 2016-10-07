@@ -36,6 +36,8 @@
 
 #define BUFSIZE 1024
 
+#define TXT_ALL_TRACKS "<--- all tracks --->"
+
 typedef enum { LIST_ARTISTS, LIST_ALBUMS, LIST_SONGS } artist_mode_t;
 
 static artist_mode_t mode = LIST_ARTISTS;
@@ -73,10 +75,8 @@ screen_artist_lw_callback(unsigned idx, void *data)
 	GPtrArray *list = data;
 
 	if (mode == LIST_ALBUMS) {
-		if (idx == 0)
-			return "..";
-		else if (idx == list->len + 1)
-			return _("All tracks");
+		if (idx == list->len)
+			return _(TXT_ALL_TRACKS);
 
 		--idx;
 	}
@@ -204,7 +204,8 @@ load_album_list(struct mpdclient *c)
 	/* sort list */
 	g_ptr_array_sort(album_list, compare_utf8);
 
-	list_window_set_length(browser.lw, album_list->len + 2);
+	/* JCD - used to be +2, use +1 to still include "all tracks" option */
+	list_window_set_length(browser.lw, album_list->len + 1);
 }
 
 static void
@@ -359,6 +360,8 @@ paint_artist_callback(WINDOW *w, unsigned i,
  * inserted: at the beginning, there's the special item ".." to go to
  * the parent directory, and at the end, there's the item "All tracks"
  * to view the tracks of all albums.
+ *
+ * JCD - now there's just one virtual item at the end for "all tracks".
  */
 static void
 paint_album_callback(WINDOW *w, unsigned i,
@@ -369,12 +372,10 @@ paint_album_callback(WINDOW *w, unsigned i,
 	const char *p;
 	char *q = NULL;
 
-	if (i == 0)
-		p = "..";
-	else if (i == list->len + 1)
-		p = _("All tracks");
+	if (i == list->len)
+		p = _(TXT_ALL_TRACKS);
 	else
-		p = q = utf8_to_locale(g_ptr_array_index(list, i - 1));
+		p = q = utf8_to_locale(g_ptr_array_index(list, i));
 
 	screen_browser_paint_directory(w, width, selected, p);
 	g_free(q);
@@ -545,28 +546,13 @@ screen_artist_cmd(struct mpdclient *c, command_t cmd)
 			return true;
 
 		case LIST_ALBUMS:
-			if (browser.lw->selected == 0) {
-				/* handle ".." */
-				old = g_strdup(artist);
-
-				open_artist_list(c);
-				list_window_reset(browser.lw);
-				/* restore previous list window state */
-				idx = string_array_find(artist_list, old);
-				g_free(old);
-
-				if (idx >= 0) {
-					list_window_set_cursor(browser.lw, idx);
-					list_window_center(browser.lw, idx);
-				}
-			} else if (browser.lw->selected == album_list->len + 1) {
+			if (browser.lw->selected == album_list->len) {
 				/* handle "show all" */
 				open_song_list(c, g_strdup(artist), ALL_TRACKS);
 				list_window_reset(browser.lw);
 			} else {
 				/* select album */
-				selected = g_ptr_array_index(album_list,
-							     browser.lw->selected - 1);
+				selected = g_ptr_array_index(album_list, browser.lw->selected);
 				open_song_list(c, g_strdup(artist), g_strdup(selected));
 				list_window_reset(browser.lw);
 			}
@@ -575,28 +561,6 @@ screen_artist_cmd(struct mpdclient *c, command_t cmd)
 			return true;
 
 		case LIST_SONGS:
-			if (browser.lw->selected == 0) {
-				/* handle ".." */
-				old = g_strdup(album);
-				old_ptr = album;
-
-				open_album_list(c, g_strdup(artist));
-				list_window_reset(browser.lw);
-				/* restore previous list window state */
-				idx = old_ptr == ALL_TRACKS
-					? (int)album_list->len
-					: string_array_find(album_list, old);
-				g_free(old);
-
-				if (idx >= 0) {
-					++idx;
-					list_window_set_cursor(browser.lw, idx);
-					list_window_center(browser.lw, idx);
-				}
-
-				artist_repaint();
-				return true;
-			}
 			break;
 		}
 		break;
@@ -636,7 +600,6 @@ screen_artist_cmd(struct mpdclient *c, command_t cmd)
 			g_free(old);
 
 			if (idx >= 0) {
-				++idx;
 				list_window_set_cursor(browser.lw, idx);
 				list_window_center(browser.lw, idx);
 			}
@@ -681,12 +644,12 @@ screen_artist_cmd(struct mpdclient *c, command_t cmd)
 		case LIST_ALBUMS:
 			list_window_get_range(browser.lw, &range);
 			for (unsigned i = range.start; i < range.end; ++i) {
-				if(i == album_list->len + 1)
+				if(i == album_list->len)
 					add_query(c, MPD_TAG_ARTIST, artist, NULL);
 				else if (i > 0)
 				{
 					selected = g_ptr_array_index(album_list,
-								     browser.lw->selected - 1);
+								     browser.lw->selected);
 					add_query(c, MPD_TAG_ALBUM, selected, artist);
 					cmd = CMD_LIST_NEXT; /* continue and select next item... */
 				}
