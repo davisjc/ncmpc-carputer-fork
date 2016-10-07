@@ -23,6 +23,8 @@
 
 #include <mpd/client.h>
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 static const gchar *
@@ -84,6 +86,13 @@ song_tag_locale(const struct mpd_song *song, enum mpd_tag_type tag)
 	const char *value = mpd_song_get_tag(song, tag, 0);
 	if (value == NULL)
 		return NULL;
+
+	if (tag == MPD_TAG_TRACK) {
+		int track_no = atoi(value);
+		char track_str[3];
+		snprintf(track_str, 3, "%02d", track_no);
+		return g_strdup(track_str);
+	}
 
 #ifndef NCMPC_MINI
 	char *all = song_more_tag_values(song, tag, value);
