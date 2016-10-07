@@ -162,7 +162,7 @@ load_artist_list(struct mpdclient *c)
 	artist_list = g_ptr_array_new();
 
 	if (connection != NULL) {
-		/* JCD - filter by album artist instead of artist. */
+		/* JCD - filter by album artist. */
 		mpd_search_db_tags(connection, MPD_TAG_ALBUM_ARTIST);
 		mpd_search_commit(connection);
 		recv_tag_values(connection, MPD_TAG_ALBUM_ARTIST, artist_list);
@@ -190,9 +190,10 @@ load_album_list(struct mpdclient *c)
 
 	if (connection != NULL) {
 		mpd_search_db_tags(connection, MPD_TAG_ALBUM);
+		/* JCD - filter by album artist. */
 		mpd_search_add_tag_constraint(connection,
 					      MPD_OPERATOR_DEFAULT,
-					      MPD_TAG_ARTIST, artist);
+					      MPD_TAG_ALBUM_ARTIST, artist);
 		mpd_search_commit(connection);
 
 		recv_tag_values(connection, MPD_TAG_ALBUM, album_list);
@@ -223,8 +224,9 @@ load_song_list(struct mpdclient *c)
 
 	if (connection != NULL) {
 		mpd_search_db_songs(connection, true);
+		/* JCD - filter by album artist. */
 		mpd_search_add_tag_constraint(connection, MPD_OPERATOR_DEFAULT,
-					      MPD_TAG_ARTIST, artist);
+					      MPD_TAG_ALBUM_ARTIST, artist);
 		if (album != ALL_TRACKS)
 			mpd_search_add_tag_constraint(connection, MPD_OPERATOR_DEFAULT,
 						      MPD_TAG_ALBUM, album);
